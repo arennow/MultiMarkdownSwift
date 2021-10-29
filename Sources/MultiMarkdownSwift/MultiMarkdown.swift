@@ -8,15 +8,15 @@ public enum MultiMarkdown {
 		let options = UInt(extensions.rawValue)
 		
 		guard let outputCString = mmd_string_convert(source, options, format.rawValue, Int16(ENGLISH.rawValue)) else {
-			struct ConversionError: Error {}
 			throw ConversionError()
 		}
 		
-		defer {
-			free(outputCString)
+		let length = strlen(outputCString)
+		guard let outString = String(bytesNoCopy: outputCString, length: length, encoding: .utf8, freeWhenDone: true) else {
+			throw StringCreationError(ptr: outputCString, length: length)
 		}
 		
-		return String(cString: outputCString)
+		return outString
 	}
 }
 
@@ -98,5 +98,17 @@ extension MultiMarkdown {
 		public static let parseITMZ = Extensions(rawValue: EXT_PARSE_ITMZ.rawValue)
 		/// Use random numbers for header labels (unless manually defined)
 		public static let randomLabels = Extensions(rawValue: EXT_RANDOM_LABELS.rawValue)
+	}
+}
+
+extension MultiMarkdown {
+	struct ConversionError: Error {}
+	
+	struct StringCreationError: Error {
+		let nonUTF8Data: Data
+		
+		fileprivate init(ptr: UnsafeMutablePointer<CChar>, length: Int) {
+			self.nonUTF8Data = Data(bytesNoCopy: ptr, count: length, deallocator: .free)
+		}
 	}
 }
