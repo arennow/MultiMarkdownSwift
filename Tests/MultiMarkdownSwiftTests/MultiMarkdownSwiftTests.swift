@@ -25,4 +25,18 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 		
 		XCTAssert(dest.contains("\\part"))
 	}
+	
+	func testCompleteDoc() throws {
+		let src = "abc"
+		
+		do {
+			let dest = try MultiMarkdownSwift.convert(src, extensions: .complete)
+			XCTAssert(dest.contains("<html"))
+		}
+		
+		do {
+			let dest = try MultiMarkdownSwift.convert(src)
+			XCTAssertFalse(dest.contains("<html"))
+		}
+	}
 }
