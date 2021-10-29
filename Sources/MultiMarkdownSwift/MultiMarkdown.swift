@@ -1,7 +1,7 @@
 import MultiMarkdown
 import Foundation
 
-public struct MultiMarkdownSwift {
+public enum MultiMarkdown {
 	public static let version = String(cString: mmd_version())
 	
 	public static func convert(_ source: String, to format: Format = .html, extensions: Extensions = []) throws -> String {
@@ -20,7 +20,7 @@ public struct MultiMarkdownSwift {
 	}
 }
 
-extension MultiMarkdownSwift {
+extension MultiMarkdown {
 	public enum Format {
 		typealias RawValue = Int16
 		

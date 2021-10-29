@@ -3,7 +3,7 @@ import XCTest
 
 final class MultiMarkdownSwiftTests: XCTestCase {
 	func testVersion() {
-		XCTAssertEqual(MultiMarkdownSwift.version, "6.6.1")
+		XCTAssertEqual(MultiMarkdown.version, "6.6.1")
 	}
 	
 	func testHTMLConversion() throws {
@@ -11,7 +11,7 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 		# Header
 		text
 		"""
-		let dest = try MultiMarkdownSwift.convert(src, to: .html)
+		let dest = try MultiMarkdown.convert(src, to: .html)
 		
 		XCTAssert(dest.contains("</h1>"))
 	}
@@ -21,7 +21,7 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 		# Header
 		text
 		"""
-		let dest = try MultiMarkdownSwift.convert(src, to: .latex)
+		let dest = try MultiMarkdown.convert(src, to: .latex)
 		
 		XCTAssert(dest.contains("\\part"))
 	}
@@ -30,12 +30,12 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 		let src = "abc"
 		
 		do {
-			let dest = try MultiMarkdownSwift.convert(src, extensions: .complete)
+			let dest = try MultiMarkdown.convert(src, extensions: .complete)
 			XCTAssert(dest.contains("<html"))
 		}
 		
 		do {
-			let dest = try MultiMarkdownSwift.convert(src)
+			let dest = try MultiMarkdown.convert(src)
 			XCTAssertFalse(dest.contains("<html"))
 		}
 	}
