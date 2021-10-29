@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "MultiMarkdown",
+        "repositoryURL": "https://github.com/arennow/MultiMarkdown-6.git",
+        "state": {
+          "branch": null,
+          "revision": "5d13e6cb90b76589574cae6a006c14e5e6b21f7a",
+          "version": "6.6.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
