@@ -3,7 +3,7 @@ import XCTest
 
 final class MultiMarkdownSwiftTests: XCTestCase {
 	func testVersion() {
-		XCTAssertEqual(MultiMarkdown.version, "6.6.1")
+		XCTAssertEqual(MultiMarkdown.underlyingVersion, "6.6.1")
 	}
 	
 	func testHTMLConversion() throws {

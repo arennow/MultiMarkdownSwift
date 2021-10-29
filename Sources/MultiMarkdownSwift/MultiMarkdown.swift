@@ -2,7 +2,7 @@ import MultiMarkdown
 import Foundation
 
 public enum MultiMarkdown {
-	public static let version = String(cString: mmd_version())
+	public static let underlyingVersion = String(cString: mmd_version())
 	
 	public static func convert(_ source: String, to format: Format = .html, extensions: Extensions = []) throws -> String {
 		let options = UInt(extensions.rawValue)
