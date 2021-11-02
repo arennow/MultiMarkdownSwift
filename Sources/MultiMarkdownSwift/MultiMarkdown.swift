@@ -2,7 +2,7 @@ import MultiMarkdown
 import Foundation
 
 public final class MultiMarkdown {
-	public static let version = "0.1.0"
+	public static let version = "0.2.0"
 	public static let underlyingVersion = String(cString: mmd_version())
 	
 	private let engine: OpaquePointer
