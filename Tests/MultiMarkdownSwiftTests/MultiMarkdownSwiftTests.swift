@@ -39,4 +39,31 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 			XCTAssertFalse(dest.contains("<html"))
 		}
 	}
+	
+	func testMetadataExtraction() throws {
+		let src = """
+		---
+		Author: Aaron Rennow
+		Date: Tuesday
+		ABC: xyz
+		---
+		# Book
+		Prose
+		"""
+		
+		let doc = try MultiMarkdown(source: src)
+		let meta = doc.getMetadata()
+		XCTAssertEqual(meta, ["author": "Aaron Rennow", "date": "Tuesday", "abc": "xyz"])
+	}
+	
+	func testEmptyMetadataExtraction() throws {
+		let src = """
+		# Book
+		Prose
+		"""
+		
+		let doc = try MultiMarkdown(source: src)
+		let meta = doc.getMetadata()
+		XCTAssertEqual(meta, [:])
+	}
 }

@@ -1,23 +1,59 @@
 import MultiMarkdown
 import Foundation
 
-public enum MultiMarkdown {
+public final class MultiMarkdown {
 	public static let version = "0.1.0"
 	public static let underlyingVersion = String(cString: mmd_version())
 	
-	public static func convert(_ source: String, to format: Format = .html, extensions: Extensions = []) throws -> String {
+	private let engine: OpaquePointer
+	
+	public init(source: String, extensions: Extensions = []) throws {
 		let options = UInt(extensions.rawValue)
-		
-		guard let outputCString = mmd_string_convert(source, options, format.rawValue, Int16(ENGLISH.rawValue)) else {
-			throw ConversionError()
-		}
+		guard let engine = mmd_engine_create_with_string(source, options) else { throw ConversionError() }
+		mmd_engine_set_language(engine, Int16(ENGLISH.rawValue))
+		self.engine = engine
+	}
+	
+	deinit {
+		mmd_engine_free(engine, true)
+	}
+	
+	public func convert(to format: Format = .html) throws -> String {
+		guard let outputCString = mmd_engine_convert(self.engine, format.rawValue) else { throw ConversionError() }
 		
 		let length = strlen(outputCString)
-		guard let outString = String(bytesNoCopy: outputCString, length: length, encoding: .utf8, freeWhenDone: true) else {
+		guard let outString = stringFromOwnedStringPointer(outputCString, length: length) else {
 			throw StringCreationError(ptr: outputCString, length: length)
 		}
 		
 		return outString
+	}
+	
+	/// Extracts the metadata from the header of the document.
+	///
+	/// - Warning: Keys are normalized to lowercase.
+	/// - Returns: A `Dictionary` of the key: value pairs.
+	public func getMetadata() -> Dictionary<String, String> {
+		guard let keyStringPtr = mmd_engine_metadata_keys(self.engine),
+			  let keyString = stringFromOwnedStringPointer(keyStringPtr)
+		else { return [:] }
+		
+		let keys = keyString.split(separator: "\n").map(String.init)
+		
+		var outDict = Dictionary<String, String>()
+		outDict.reserveCapacity(keys.count)
+		
+		for key in keys {
+			outDict[key] = String(cString: mmd_engine_metavalue_for_key(self.engine, key))
+		}
+		
+		return outDict
+	}
+}
+
+extension MultiMarkdown {
+	public static func convert(_ source: String, to format: Format = .html, extensions: Extensions = []) throws -> String {
+		try Self.init(source: source, extensions: extensions).convert(to: format)
 	}
 }
 
@@ -112,4 +148,10 @@ extension MultiMarkdown {
 			self.nonUTF8Data = Data(bytesNoCopy: ptr, count: length, deallocator: .free)
 		}
 	}
+}
+
+fileprivate func stringFromOwnedStringPointer(_ ptr: UnsafeMutablePointer<CChar>?, length: Int? = nil) -> String? {
+	guard let ptr = ptr else { return nil }
+	let length = length ?? strlen(ptr)
+	return String(bytesNoCopy: ptr, length: length, encoding: .utf8, freeWhenDone: true)
 }
