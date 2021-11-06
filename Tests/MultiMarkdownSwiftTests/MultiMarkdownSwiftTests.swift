@@ -1,5 +1,5 @@
 import XCTest
-@testable import MultiMarkdownSwift
+import MultiMarkdownSwift
 
 final class MultiMarkdownSwiftTests: XCTestCase {
 	func testVersion() {

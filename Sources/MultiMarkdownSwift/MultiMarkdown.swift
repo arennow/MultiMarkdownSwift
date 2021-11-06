@@ -2,7 +2,7 @@ import MultiMarkdown
 import Foundation
 
 public final class MultiMarkdown {
-	public static let version = "0.2.0"
+	public static let version = "0.3.0"
 	public static let underlyingVersion = String(cString: mmd_version())
 	
 	private let engine: OpaquePointer
@@ -152,9 +152,9 @@ public extension MultiMarkdown {
 
 public extension MultiMarkdown {
 	struct Metadata {
-		let dictionary: Dictionary<String, String>
+		public let dictionary: Dictionary<String, String>
 		
-		subscript(key: String) -> String? {
+		public subscript(key: String) -> String? {
 			dictionary[key.lowercased()]
 		}
 	}
