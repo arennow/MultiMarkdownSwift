@@ -32,11 +32,11 @@ public final class MultiMarkdown {
 	/// Extracts the metadata from the header of the document.
 	///
 	/// - Warning: Keys are normalized to lowercase.
-	/// - Returns: A `Dictionary` of the key: value pairs.
-	public func getMetadata() -> Dictionary<String, String> {
+	/// - Returns: A `String` `subscript`able type (`Metadata`) that correctly normailizes the keys in the key: value pairs.
+	public func getMetadata() -> Metadata {
 		guard let keyStringPtr = mmd_engine_metadata_keys(self.engine),
 			  let keyString = stringFromOwnedStringPointer(keyStringPtr)
-		else { return [:] }
+		else { return .init(dictionary: [:]) }
 		
 		let keys = keyString.split(separator: "\n").map(String.init)
 		
@@ -47,18 +47,18 @@ public final class MultiMarkdown {
 			outDict[key] = String(cString: mmd_engine_metavalue_for_key(self.engine, key))
 		}
 		
-		return outDict
+		return Metadata(dictionary: outDict)
 	}
 }
 
-extension MultiMarkdown {
-	public static func convert(_ source: String, to format: Format = .html, extensions: Extensions = []) throws -> String {
+public extension MultiMarkdown {
+	static func convert(_ source: String, to format: Format = .html, extensions: Extensions = []) throws -> String {
 		try Self.init(source: source, extensions: extensions).convert(to: format)
 	}
 }
 
-extension MultiMarkdown {
-	public enum Format {
+public extension MultiMarkdown {
+	enum Format {
 		typealias RawValue = Int16
 		
 		case html
@@ -94,7 +94,7 @@ extension MultiMarkdown {
 		}
 	}
 	
-	public struct Extensions: OptionSet {
+	struct Extensions: OptionSet {
 		public let rawValue: parser_extensions.RawValue
 		
 		public init(rawValue: parser_extensions.RawValue) {
@@ -138,7 +138,7 @@ extension MultiMarkdown {
 	}
 }
 
-extension MultiMarkdown {
+public extension MultiMarkdown {
 	struct ConversionError: Error {}
 	
 	struct StringCreationError: Error {
@@ -146,6 +146,16 @@ extension MultiMarkdown {
 		
 		fileprivate init(ptr: UnsafeMutablePointer<CChar>, length: Int) {
 			self.nonUTF8Data = Data(bytesNoCopy: ptr, count: length, deallocator: .free)
+		}
+	}
+}
+
+public extension MultiMarkdown {
+	struct Metadata {
+		let dictionary: Dictionary<String, String>
+		
+		subscript(key: String) -> String? {
+			dictionary[key.lowercased()]
 		}
 	}
 }

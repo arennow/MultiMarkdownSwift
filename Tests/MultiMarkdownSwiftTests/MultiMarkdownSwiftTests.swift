@@ -53,7 +53,8 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 		
 		let doc = try MultiMarkdown(source: src)
 		let meta = doc.getMetadata()
-		XCTAssertEqual(meta, ["author": "Aaron Rennow", "date": "Tuesday", "abc": "xyz"])
+		XCTAssertEqual(meta.dictionary, ["author": "Aaron Rennow", "date": "Tuesday", "abc": "xyz"])
+		XCTAssertEqual(meta["auThor"], "Aaron Rennow")
 	}
 	
 	func testEmptyMetadataExtraction() throws {
@@ -64,6 +65,6 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 		
 		let doc = try MultiMarkdown(source: src)
 		let meta = doc.getMetadata()
-		XCTAssertEqual(meta, [:])
+		XCTAssertEqual(meta.dictionary, [:])
 	}
 }
