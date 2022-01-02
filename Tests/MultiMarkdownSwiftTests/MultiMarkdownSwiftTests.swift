@@ -44,8 +44,8 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 		let src = """
 		---
 		Author: Aaron Rennow
-		Date: Tuesday
 		ABC: xyz
+		Best Part: The End
 		---
 		# Book
 		Prose
@@ -53,8 +53,10 @@ final class MultiMarkdownSwiftTests: XCTestCase {
 		
 		let doc = try MultiMarkdown(source: src)
 		let meta = doc.getMetadata()
-		XCTAssertEqual(meta.dictionary, ["author": "Aaron Rennow", "date": "Tuesday", "abc": "xyz"])
+		XCTAssertEqual(meta.dictionary, ["author": "Aaron Rennow", "abc": "xyz", "bestpart": "The End"])
 		XCTAssertEqual(meta["auThor"], "Aaron Rennow")
+		XCTAssertEqual(meta["Best Part"], "The End")
+		XCTAssertEqual(meta["Bestpart"], "The End")
 	}
 	
 	func testEmptyMetadataExtraction() throws {

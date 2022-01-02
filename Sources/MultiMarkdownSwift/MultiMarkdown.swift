@@ -151,11 +151,21 @@ public extension MultiMarkdown {
 }
 
 public extension MultiMarkdown {
-	struct Metadata {
+	struct Metadata: Equatable {
 		public let dictionary: Dictionary<String, String>
 		
 		public subscript(key: String) -> String? {
-			dictionary[key.lowercased()]
+			let keyCharSeq = key.lazy.compactMap { c -> String? in
+				if c.isWhitespace {
+					return nil
+				} else if c.isUppercase {
+					return c.lowercased()
+				} else {
+					return String(c)
+				}
+			}
+			
+			return self.dictionary[keyCharSeq.joined()]
 		}
 	}
 }
