@@ -1,0 +1,15 @@
+{
+  "originHash" : "d0ced1947db97cd045445b1088bfa38d3937adaecf8cdcd0fda8a00f590d2a9b",
+  "pins" : [
+    {
+      "identity" : "multimarkdown-6",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/arennow/MultiMarkdown-6.git",
+      "state" : {
+        "revision" : "5d13e6cb90b76589574cae6a006c14e5e6b21f7a",
+        "version" : "6.6.1"
+      }
+    }
+  ],
+  "version" : 3
+}

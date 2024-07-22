@@ -94,7 +94,7 @@ public extension MultiMarkdown {
 		}
 	}
 	
-	struct Extensions: OptionSet {
+	struct Extensions: OptionSet, Sendable {
 		public let rawValue: parser_extensions.RawValue
 		
 		public init(rawValue: parser_extensions.RawValue) {
